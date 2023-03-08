@@ -1,0 +1,64 @@
+﻿@page "/detalji/{id:int}"
+@inject NavigationManager navManager;
+@using WebApiPovezivanje.Models
+@inject HttpClient httpClient;
+
+<h3>Detalji</h3>
+
+<style>
+    h3 {
+        color: red;
+        font-style: italic;
+        text-shadow: 2px 2px 2px inherit;
+    }
+</style>
+<br />
+Proslijeđeni Id= @Id
+<br />
+<br />
+
+
+
+<p>
+    Ime osobe: @osoba.Ime
+</p>
+<p>
+   Prezime osobe: @osoba.Prezime
+</p>
+<p>
+    BrojTelefona osobe: @osoba.BrojTelefona
+</p>
+<p>
+    BrojMobitela osobe: @osoba.BrojMobitela
+</p>
+<p>
+    Grad osobe: @osoba.Grad
+</p>
+<p>
+    Adresa osobe: @osoba.Adresa
+</p>
+<p>
+    Drzava osobe: @osoba.Drzava
+</p>
+
+<button @onclick="Nazad">Nazad</button>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public Osoba osoba = new Osoba();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await httpClient.GetAsync($"https://expertvjezbeapi.azurewebsites.net/api/Osobes/{Id}");
+        if (result.IsSuccessStatusCode)
+        {
+            osoba = await result.Content.ReadFromJsonAsync<Osoba>();
+        }
+    }
+
+    public void Nazad()
+    {
+        navManager.NavigateTo("/osobe");
+    }
+}

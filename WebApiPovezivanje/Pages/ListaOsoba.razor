@@ -1,0 +1,110 @@
+﻿@page "/osobe"
+@using WebApiPovezivanje.Models;
+@inject HttpClient httpClient;
+@inject NavigationManager nManager;
+
+<style>
+    h3 {
+        color: red;
+        font-style: italic;
+        text-shadow: 2px 2px 2px inherit;
+    }
+</style>
+
+<h3>Lista Osoba</h3>
+
+<input type="text" @bind-value="search" placeholder="Upisi za pretragu" />
+<button @onclick="Trazi">Pretrazi</button>
+<button @onclick="Lista">Dohvati sve</button>
+<button @onclick="Dodaj">Dodaj novu osobu</button>
+
+<br />
+<br />
+
+<ul>
+    @foreach(var item in osobe)
+    {
+        <li>@item.Ime @item.Prezime  @item.Id
+            <button @onclick="()=>Detalji(item.Id)" >Detalji</button>
+            <button @onclick="()=>Uredi(item.Id)">Uredi Osobu</button>
+            <button @onclick="()=>Obrisi(item.Id)">Obrisi osobu</button>
+
+        </li>
+    }
+
+</ul>
+
+@code {
+
+
+    public List<Osoba> osobe = new List<Osoba>();
+
+
+
+    public string search = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        osobe = await DohvatiListuAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+
+    
+
+
+    public async Task<List<Osoba>> DohvatiListuAsync()
+    {
+        List<Osoba> osobeSaServera = new List<Osoba>();
+
+        var result = await httpClient.GetAsync("https://expertvjezbeapi.azurewebsites.net/api/Osobes");
+        if (result.IsSuccessStatusCode)
+        {
+            osobeSaServera = await result.Content.ReadFromJsonAsync<List<Osoba>>();
+
+            osobeSaServera = osobeSaServera.OrderByDescending(x => x.Id).ToList();
+        }
+
+        return osobeSaServera;
+
+    }
+    public async Task Lista()
+    {
+        osobe = await DohvatiListuAsync();    
+    }
+
+    public async Task Trazi()
+    {
+        osobe = osobe.Where(x => x.Ime.ToLower().Contains(search.ToLower()) || x.Prezime.ToLower().Contains(search.ToLower())).ToList();
+    }
+
+    protected void Detalji(int idOsobe)
+    {
+        nManager.NavigateTo($"detalji/{idOsobe}");
+    }
+
+    protected void Uredi(int idOsobe)
+    {
+        nManager.NavigateTo($"edit/{idOsobe}");
+    }
+
+    protected void Dodaj()
+    {
+        nManager.NavigateTo($"dodaj");
+    }
+
+    protected void Obrisi(int idOsobe)
+    {
+        nManager.NavigateTo($"delete/{idOsobe}");
+    }
+
+    
+}
