@@ -1,0 +1,42 @@
+﻿body {
+}
+
+
+
+.form-control {
+    background-color: aqua;
+    color: red;
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: .35rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-label {
+    margin-bottom: .5rem;
+    color: red;
+}
+
+.posebni-input{
+    background-color:chartreuse;
+    color:darkgoldenrod
+}
+
+.btn-moj:hover{
+background-color:black;
+}
+
+.btn-primary:active {
+    border:dashed 10px; 
+    border-color:coral;
+}
+
